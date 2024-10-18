@@ -1,0 +1,80 @@
+# Import all the relevant functionalities from other modules
+from traceback import clear_frames
+
+from game_data import data
+from art import logo
+from art import vs
+import random
+import os
+        
+        
+#Global variables
+SCORE = 0
+SET_A =0
+SET_B = 0
+SET_LIST = (SET_A, SET_B)
+
+#select a random list item from the list "data" which can be used for comparison...
+def random_dict(letter, data_list):
+    search_set = random.choice(data_list)
+    print(f"Compare {letter}: {search_set['name']}, a {search_set['description']} from {search_set['country']}.")
+
+    return search_set
+
+
+# previous set coming into one of the next sets:
+def repeat_set(set1, set2):
+    global SET_LIST
+    SET_LIST = (SET_A, SET_B)
+    compare_letters = ('A', 'B')
+    index = random.randint(0, 1)
+
+    if compare_letters[index] == 'A':
+        set1 = random_dict(letter= 'A', data_list= SET_LIST)
+        print(vs)
+        set2 = random_dict(letter= 'B', data_list= data)
+
+    else:
+        set1 = random_dict(letter= 'A', data_list= data)
+        print(vs)
+        set2 = random_dict(letter= 'B', data_list= SET_LIST)
+
+    return set1, set2
+
+        
+# comparing the followers of the selected random sets and score functionality
+def compare_and_score(set1,set2):
+    global SCORE
+    if set1['follower_count'] > set2['follower_count']:
+        SCORE += 1
+        os.system('cls')
+        game()
+
+    else:
+        os.system('cls')
+        print(f"Your final score is: {SCORE}.")
+        print("You got it wrong. Bye bye 😢")
+
+
+#user input and mapping and over all functions packaging into a systematic output format.
+def game():
+    global SCORE, SET_A, SET_B, SET_LIST
+
+    if SCORE == 0:
+        SET_A = random_dict(letter='A', data_list=data)
+        print(vs)
+        SET_B = random_dict(letter='B', data_list= data)
+    
+    else:
+        print(f"Your score is: {SCORE}.")
+        SET_A, SET_B = repeat_set(set1= SET_A, set2= SET_B)
+
+
+    user_input = str.lower(input("Who has more followers? Type 'A' or 'B':  "))
+    if user_input == 'a':
+        compare_and_score(set1=SET_A, set2=SET_B)
+    if user_input == 'b':
+        compare_and_score(set1=SET_B, set2=SET_A)
+
+print(logo)
+game()
